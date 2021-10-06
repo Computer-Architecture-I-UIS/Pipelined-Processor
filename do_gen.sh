@@ -6,11 +6,36 @@ fi
 
 rm ./generated/*
 
-if [ ! -z $1 ]; then
-	sbt 'runMain Processor.ALUDriver_Verilog'
+mod="Processor."
+
+# Module name to run, defaults to TOP
+if [ -n $1 ]; then
+	if [[ $1 == "ALU" ]]; then
+		mod=$mod"ALUDriver"
+	elif [[ $1 == "InstDeco" ]]; then
+		echo "TODO InstDeco"
+		mod=$mod"InstDecoDriver"
+		exit 1
+	else
+		echo "TODO TOP"
+		mod=$mod"TOP"
+		exit 1
+	fi
 else
-	sbt 'runMain Processor.ALUDriver_SystemVerilog'
+	# Generate TOP by default
+	echo "TODO TOP"
+	mod=$mod"TOP"
+	exit 1
 fi
+
+# Generate SystemVerilog by default
+if [ -z $2 ]; then
+		mod=$mod"_SystemVerilog"
+	else
+		mod=$mod"_Verilog"
+fi
+
+sbt "runMain $mod"
 
 rm ./generated/*
 mv *.sv ./generated/
