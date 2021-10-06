@@ -4,6 +4,7 @@ if [ ! -d generated ]; then
   mkdir generated
 fi
 
+
 rm ./generated/*
 
 if [ ! -z $1 ]; then
