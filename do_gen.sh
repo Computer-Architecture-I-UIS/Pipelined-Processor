@@ -14,12 +14,9 @@ if [ -n $1 ]; then
 	if [[ $1 == "ALU" ]]; then
 		mod=$mod"ALUDriver"
 	elif [[ $1 == "InstDeco" ]]; then
-		echo "TODO InstDeco"
 		mod=$mod"InstDecoDriver"
-		exit 1
 	else
-		echo "TODO TOP"
-		mod=$mod"TOP"
+		echo "Available names: ALU, InstDeco"
 		exit 1
 	fi
 else
