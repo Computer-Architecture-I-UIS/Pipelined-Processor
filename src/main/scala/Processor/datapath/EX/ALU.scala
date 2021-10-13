@@ -83,13 +83,21 @@ class ALU (val formal:Boolean=false) extends Module{
 			} .otherwise{						io.out:=0.U						}
 		}.otherwise{					io.out:=0.U				}
 
+	// Formal verification
 	if (formal){
-		when(opcode === "h37".U || opcode === "h17".U){ // lui, auipc
+		when(opcode === "h37".U || opcode === "h17".U){ // lui, auipc -> not implemented, so output is 0
 			verification.assert(io.out === 0.U)
 		}
-		when(opcode === "h13".U && funct3 === "h0".U){ // addi
-			verification.assert(io.out === (io.in1 + io.in2))
+		when(opcode === "h13".U && funct3 === "h0".U){
+			when(funct3 === "h0".U) { verification.assert( io.out === ( io.in1 + io.in2 ) ) } // addi
+			.elsewhen(funct3==="h2".U) { verification.assert( io.out === (io.in1.asSInt < io.in2.asSInt).asUInt ) } //slti
+			.elsewhen(funct3==="h3".U) { verification.assert( io.out === Mux(io.in1 < io.in2, 1.U, 0.U) ) } //sltiu
+			.elsewhen(funct3==="h4".U) { verification.assert( io.out === ( io.in1 ^ io.in2 ) ) } //xori
+			.elsewhen(funct3==="h6".U) { verification.assert( io.out === ( io.in1 | io.in2 ) ) } //ori
+			.elsewhen(funct3==="h7".U) { verification.assert( io.out === ( io.in1 & io.in2 ) ) } //andi
+			.elsewhen(funct3==="h1".U) { verification.assert( io.out === ( io.in1 << io.in2(4,0) ) ) } //slli
 		}
+
 	}
 
 }
