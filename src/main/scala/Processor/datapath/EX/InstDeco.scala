@@ -350,37 +350,64 @@ if (formal){
 			init := true.B
 			//Rule 1 beq instruction 
 		}.elsewhen((opcode === "h63".U) && (funct3 === "h0".U)){ 
-			verification.assert(io.state:=ins.beq)           
+			verification.assert(io.state === ins.beq)           
 			//Rule 2 bne instruction
 		}.elsewhen((opcode === "h63".U) && (funct3 === "h1".U)){ 
-			verification.assert(io.state:=ins.bne)
+			verification.assert(io.state === ins.bne)
 			//Rule 3 blt instruction
 		}.elsewhen((opcode === "h63".U) && (funct3 === "h4".U)){ 
-			verification.assert(io.state:=ins.blt)
+			verification.assert(io.state === ins.blt)
 			//Rule 4 bge instruction
 		}.elsewhen((opcode === "h63".U) && (funct3 === "h5".U)){ 
-			verification.assert(io.state:=ins.bge)
+			verification.assert(io.state === ins.bge)
 			//Rule 5 bltu instruction
 		}.elsewhen((opcode === "h63".U) && (funct3 === "h6".U)){ 
-			verification.assert(io.state:=ins.bltu)
+			verification.assert(io.state === ins.bltu)
 			//Rule 6 bgeu instruction
 		}.elsewhen((opcode === "h63".U) && (funct3 === "h7".U)){ 
-			verification.assert(io.state:=ins.bgeu)
+			verification.assert(io.state === ins.bgeu)
 			//Rule 7 lb instruction
 		}.elsewhen((opcode === "h3".U) && (funct3 === "h0".U)){ 
-			verification.assert(io.state:=ins.lb)
+			verification.assert(io.state === ins.lb)
 			//Rule 8 lh instruction
 		}.elsewhen((opcode === "h3".U) && (funct3 === "h1".U)){ 
-			verification.assert(io.state:=ins.lh)
+			verification.assert(io.state === ins.lh)
 			//Rule 9 lw instruction
 		}.elsewhen((opcode === "h3".U) && (funct3 === "h2".U)){ 
-			verification.assert(io.state:=ins.lw)
+			verification.assert(io.state === ins.lw)
 			//Rule 10 lbu instruction
 		}.elsewhen((opcode === "h3".U) && (funct3 === "h4".U)){ 
-			verification.assert(io.state:=ins.lbu)
+			verification.assert(io.state === ins.lbu)
 			//Rule 11 lhu instruction
 		}.elsewhen((opcode === "h3".U) && (funct3 === "h5".U)){ 
-			verification.assert(io.state:=ins.lhu)
+			verification.assert(io.state === ins.lhu)
+			//Rule 12 sb instruction
+		}.elsewhen((opcode === "h23".U) && (funct3 === "h0".U)){ 
+			verification.assert(io.state === ins.sb)
+			//Rule 13 sh instruction
+		}.elsewhen((opcode === "h23".U) && (funct3 === "h1".U)){ 
+			verification.assert(io.state === ins.sh)
+			//Rule 14 sw instruction
+		}.elsewhen((opcode === "h23".U) && (funct3 === "h2".U)){ 
+			verification.assert(io.state === ins.sw)
+			//Rule 15 addi instruction
+		}.elsewhen((opcode === "h13".U) && (funct3 === "h0".U)){ 
+			verification.assert(io.state === ins.addi)
+			//Rule 16 slti instruction
+		}.elsewhen((opcode === "h13".U) && (funct3 === "h2".U)){ 
+			verification.assert(io.state === ins.slti)
+			//Rule 17 sltiu instruction
+		}.elsewhen((opcode === "h13".U) && (funct3 === "h3".U)){ 
+			verification.assert(io.state === ins.sltiu)
+			//Rule 18 xori instruction
+		}.elsewhen((opcode === "h13".U) && (funct3 === "h4".U)){ 
+			verification.assert(io.state === ins.xori)
+			//Rule 19 ori instruction
+		}.elsewhen((opcode === "h13".U) && (funct3 === "h6".U)){ 
+			verification.assert(io.state === ins.ori)
+			//Rule 20 andi instruction
+		}.elsewhen((opcode === "h13".U) && (funct3 === "h7".U)){ 
+			verification.assert(io.state === ins.andi)
 		}
 	}
 }
