@@ -4,6 +4,7 @@
 generated
 ALU_formal
 formal/ALU
+formal/InstDeco
 .metals/
 .bsp/
 
