@@ -109,21 +109,21 @@ class ALU (val formal:Boolean=false) extends Module{
 			}
 		.elsewhen(funct3==="h2".U)	{
 			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1.asSInt < io.in2.asSInt).asUInt)} //slt
-			.otherwise{					  verification.assert(io.out:===0.U) }
+			.otherwise{					  verification.assert(io.out===0.U) }
 			}
 		.elsewhen(funct3==="h3".U)	{
 			when(funct7==="h0".U)	{	  verification.assert(io.out === Mux(io.in1 < io.in2, 1.U, 0.U)) } //sltu
 			.otherwise{					  verification.assert(io.out===0.U)	}
 			}
 		.elsewhen(funct3==="h4".U)	{
-			when(funct7==="h0".U)	{	  verification.assert(io.out === io.in1 ^ io.in2) } //xor
+			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1 ^ io.in2)) } //xor
 			.otherwise{					  verification.assert(io.out===0.U)	}
 			}
 		.elsewhen(funct3==="h5".U)	{
 			when(funct7==="h0".U)	{	  verification.assert(io.out === io.in1 >> io.in2(4,0)) } //srl
-			.elsewhen(funct7==="h20".U)	{ when     (io.in1(31) === 0.U){ verification.assert(io.out === io.in1 >> io.in2(4,0)) }
+			.elsewhen(funct7==="h20".U)	{ when     (io.in1(31) === 0.U){ verification.assert(io.out === (io.in1 >> io.in2(4,0))) }
 
-																					.otherwise{verification.assert(io.out === io.in1 >> io.in2(4,0) | ("hFFFF_FFFF".U << (32.U - io.in2(4,0)))) }
+																					.otherwise{verification.assert(io.out === (io.in1 >> io.in2(4,0) | ("hFFFF_FFFF".U << (32.U - io.in2(4,0))))) }
 																					} //sra
 			.otherwise{					  verification.assert(io.out===0.U) }
 			}
