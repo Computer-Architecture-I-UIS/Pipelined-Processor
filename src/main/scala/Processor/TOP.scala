@@ -1,4 +1,4 @@
-package Proccesor
+package Processor
 
 import chisel3._
 import chisel3.util._
@@ -15,8 +15,8 @@ class TOP extends Module{
 	val InstDeco = Module(new InstDeco)
 	val ALU = Module(new ALU)
 	val InstMem = Module(new InstMem)
-	val memory = Module(new Memory)
-	val control = Module(new control)
+	val Memory = Module(new Memory)
+	val Control = Module(new Control)
 
 	// **** Starting Program Counter ****
 	val addrI = RegInit(0.U(32.W))
@@ -40,8 +40,8 @@ class TOP extends Module{
 	//Starting Instructions object
 	val ins = Instructions
 
-	//state (Output InstDeco - Input control)
-	control.io.state := InstDeco.io.state
+	//state (Output InstDeco - Input Control)
+	Control.io.state := InstDeco.io.state
 
 	//addrI (Address Instructions memory)
 	InstMem.io.addrI := addrI
@@ -58,10 +58,10 @@ class TOP extends Module{
 
 	//ALU (Input state - Output out)
 	ALU.io.instruc := InstDeco.io.state
-	ALU.io.in1 := Mux(control.io.muxALUin1, RegOfVec(InstDeco.io.rs1), 0.U)
-	when(control.io.muxALUin2 === 2.U){
+	ALU.io.in1 := Mux(Control.io.muxALUin1, RegOfVec(InstDeco.io.rs1), 0.U)
+	when(Control.io.muxALUin2 === 2.U){
 		ALU.io.in2 := RegOfVec(InstDeco.io.rs2)
-	} .elsewhen(control.io.muxALUin2 === 1.U){
+	} .elsewhen(Control.io.muxALUin2 === 1.U){
 		ALU.io.in2 := InstDeco.io.imm.asUInt
 	} .otherwise{
 		ALU.io.in2 := 0.U
@@ -80,19 +80,19 @@ class TOP extends Module{
 	//Mux Control//
 
 	//Mux program counter (addrI)
-	when(control.io.muxAddrI===0.U){
+	when(Control.io.muxAddrI===0.U){
 		addrI := addrI + 1.U
-	} .elsewhen(control.io.muxAddrI===1.U){
+	} .elsewhen(Control.io.muxAddrI===1.U){
 		addrI := addrI + InstDeco.io.imm.asUInt
-	} .elsewhen(control.io.muxAddrI===2.U){
+	} .elsewhen(Control.io.muxAddrI===2.U){
 		addrI := Cat((RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt)(31,1),0.U(1.W))
-	} .elsewhen(control.io.muxAddrI===3.U){
+	} .elsewhen(Control.io.muxAddrI===3.U){
 		addrI := Mux(ALU.io.out===1.U, addrI + InstDeco.io.imm.asUInt, addrI + 1.U)
 	}
 
 	//Mux Registers bank
 
-	muxRegOfVecPipe := control.io.muxRegOfVec
+	muxRegOfVecPipe := Control.io.muxRegOfVec
 	val nextmuxRegOfVecPipe = muxRegOfVecPipe
 
 	regPipeimm :=  InstDeco.io.imm
@@ -101,11 +101,11 @@ class TOP extends Module{
 	when(nextmuxRegOfVecPipe===0.U){
 		RegOfVec(InstDeco.io.rd) := nextregPipeMWB + 1.U
 	} .elsewhen(nextmuxRegOfVecPipe===1.U){
-		RegOfVec(InstDeco.io.rd) := Memo.io.rdData
+		RegOfVec(InstDeco.io.rd) := Memory.io.rdData
 	} .elsewhen(nextmuxRegOfVecPipe===2.U){
-		RegOfVec(InstDeco.io.rd) := Memo.io.rdData(7,0)
+		RegOfVec(InstDeco.io.rd) := Memory.io.rdData(7,0)
 	} .elsewhen(nextmuxRegOfVecPipe===3.U){
-		RegOfVec(InstDeco.io.rd) := Memo.io.rdData(15,0)
+		RegOfVec(InstDeco.io.rd) := Memory.io.rdData(15,0)
 	} .elsewhen(nextmuxRegOfVecPipe===4.U){
 		RegOfVec(InstDeco.io.rd) := nextregPipeimm.asUInt
 	} .elsewhen(nextmuxRegOfVecPipe===5.U){
@@ -117,31 +117,31 @@ class TOP extends Module{
 	}
 
 	//Mux for write enable of Memory
-	regPipemuxwen := control.io.muxwen
+	regPipemuxwen := Control.io.muxwen
 	val nextregPipemuxwen = regPipemuxwen
-	Memo.io.wen := Mux(nextregPipemuxren===1.U, 1.U, 0.U)
+	Memory.io.wen := Mux(nextregPipemuxren===1.U, 1.U, 0.U)
 
 	//Mux for read enable of Memory
-	regPipemuxren := control.io.muxren
+	regPipemuxren := Control.io.muxren
 	val nextregPipemuxren = regPipemuxren
-	Memo.io.ren := Mux(nextregPipemuxren===1.U, 1.U, 0.U)
+	Memory.io.ren := Mux(nextregPipemuxren===1.U, 1.U, 0.U)
 
 	//Mux for write address of Memory
-	Memo.io.wrAddr := Mux(control.io.muxwrAddr===1.U, RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt, 0.U)
+	Memory.io.wrAddr := Mux(Control.io.muxwrAddr===1.U, RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt, 0.U)
 
 
 	//Mux for read address of Memory
-	Memo.io.rdAddr := Mux(control.io.muxrdAddr===1.U, RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt, 0.U)
+	Memory.io.rdAddr := Mux(Control.io.muxrdAddr===1.U, RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt, 0.U)
 
 	//Mux for write data of Memory
-	when(control.io.muxwrData===0.U){
-		Memo.io.wrData := RegOfVec(InstDeco.io.rs2)
-	} .elsewhen(control.io.muxwrData===1.U){
-		Memo.io.wrData := RegOfVec(InstDeco.io.rs2)(15,0)
-	} .elsewhen(control.io.muxwrData===2.U){
-		Memo.io.wrData := RegOfVec(InstDeco.io.rs2)(7,0)
-	} .elsewhen(control.io.muxwrData===3.U){
-		Memo.io.wrData := 0.U
+	when(Control.io.muxwrData===0.U){
+		Memory.io.wrData := RegOfVec(InstDeco.io.rs2)
+	} .elsewhen(Control.io.muxwrData===1.U){
+		Memory.io.wrData := RegOfVec(InstDeco.io.rs2)(15,0)
+	} .elsewhen(Control.io.muxwrData===2.U){
+		Memory.io.wrData := RegOfVec(InstDeco.io.rs2)(7,0)
+	} .elsewhen(Control.io.muxwrData===3.U){
+		Memory.io.wrData := 0.U
 	}
 
 }
