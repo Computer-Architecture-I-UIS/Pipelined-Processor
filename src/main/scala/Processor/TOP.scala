@@ -3,9 +3,10 @@ package Processor
 import chisel3._
 import chisel3.util._
 
+import chisel3.experimental._ // formal verification
+import chisel3.stage.ChiselStage // verilog, sverilog generation
 
-
-class TOP extends Module{
+class TOP (val formal:Boolean=false) extends Module{
 	val io = IO(new Bundle {
 		val reset = Input(Bool())
 		val out = Output(UInt(32.W))
@@ -95,7 +96,7 @@ class TOP extends Module{
 	muxRegOfVecPipe := Control.io.muxRegOfVec
 	val nextmuxRegOfVecPipe = muxRegOfVecPipe
 
-	regPipeimm :=  InstDeco.io.imm
+	regPipeimm :=  InstDeco.io.imm.asUInt
 	val nextregPipeimm = regPipeimm
 
 	when(nextmuxRegOfVecPipe===0.U){
@@ -119,7 +120,7 @@ class TOP extends Module{
 	//Mux for write enable of Memory
 	regPipemuxwen := Control.io.muxwen
 	val nextregPipemuxwen = regPipemuxwen
-	Memory.io.wen := Mux(nextregPipemuxren===1.U, 1.U, 0.U)
+	Memory.io.wen := Mux(nextregPipemuxwen === 1.U, 1.U, 0.U)
 
 	//Mux for read enable of Memory
 	regPipemuxren := Control.io.muxren
@@ -144,6 +145,15 @@ class TOP extends Module{
 		Memory.io.wrData := 0.U
 	}
 
+	if (formal){
+		val init = RegInit(false.B)
+
+		when(init === false.B){
+			verification.assume(io.reset)
+			init := true.B
+		}
+	}
+
 }
 
 
@@ -151,4 +161,16 @@ class TOP extends Module{
 object TOPMain extends App
 {
 	chisel3.Driver.execute(args, () => new TOP)
+}
+
+// Verilog Generation
+
+object TOPDriver_Verilog extends App {
+	(new ChiselStage).emitVerilog(new TOP(formal=false),args)
+}
+
+// SystemVerilog Generation
+
+object TOPDriver_SystemVerilog extends App {
+	(new ChiselStage).emitSystemVerilog(new TOP(formal=true),args)
 }

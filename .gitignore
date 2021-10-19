@@ -3,8 +3,14 @@
 
 generated
 ALU_formal
+
 formal/ALU
 formal/InstDeco
+formal/TOP
+formal/InstMem
+formal/Memory
+formal/Control
+
 .metals/
 .bsp/
 

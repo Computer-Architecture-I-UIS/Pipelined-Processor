@@ -15,14 +15,18 @@ if [ -n $1 ]; then
 		mod=$mod"ALUDriver"
 	elif [[ $1 == "InstDeco" ]]; then
 		mod=$mod"InstDecoDriver"
+	elif [[ $1 == "TOP" ]]; then
+		mod=$mod"TOPDriver"
 	else
-		echo "Available names: ALU, InstDeco"
+		echo "Usage: ./do_gen.sh name [v]"
+		echo "Available names: ALU, InstDeco, TOP"
+		echo "Generates SystemVerilog by default, use second argument to generate Verilog"
 		exit 1
 	fi
 else
-	# Generate TOP by default
-	echo "TODO TOP"
-	mod=$mod"TOP"
+	echo "Usage: ./do_gen.sh name [v]"
+	echo "Available names: ALU, InstDeco, TOP"
+	echo "Generates SystemVerilog by default, use second argument to generate Verilog"
 	exit 1
 fi
 
