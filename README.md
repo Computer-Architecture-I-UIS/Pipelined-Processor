@@ -85,8 +85,6 @@ Block_name is replaced by the name of the block to be verified, for example, to 
 Sby -f formal/ ALU.sby
 ```
 
-## Example Execution
-
 ## Assembly and C compilation programs
 In the following section, you will find a compilation of programs that were created in Assembly and C language, also you will find a little description of each one to understand their functionality.
 
