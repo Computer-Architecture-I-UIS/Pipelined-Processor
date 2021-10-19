@@ -164,7 +164,7 @@ The algorithm consists of entering a number n and the program must determine if 
 
 * [1] Riscvbook.com, 2021. [Online](http://riscvbook.com/spanish/guia-practica-de-risc-v-1.0.5.pdf) [Accessed: 20- Sep- 2021].
 * [2] Home.ustc.edu.cn, 2021. [Online](http://home.ustc.edu.cn/~louwenqi/reference_books_tools/Computer%20Organization%20and%20Design%20RISC-V%20edition.pdf) [Accessed: 19- Oct- 2021].
-* [3] Home.ustc.edu.cn, 2021. [Online](http://home.ustc.edu.cn/~louwenqi/reference_books_tools/Computer%20Organization%20and%20Design%20RISC-V%20edition.pdf) [Accessed: 19- Oct- 2021].
+* [3] Imm.dtu.dk, 2021. [Online](http://www.imm.dtu.dk/~masca/chisel-book.pdf) [Accessed: 19- Oct- 2021].
 * https://github.com/Computer-Architecture-I-UIS/full-processor-maryteam.git
 * https://github.com/Computer-Architecture-I-UIS/the-processor-maryteam.git
 
