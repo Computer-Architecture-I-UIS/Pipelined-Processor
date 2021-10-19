@@ -97,9 +97,47 @@ class ALU (val formal:Boolean=false) extends Module{
 			.elsewhen(funct3==="h7".U) { verification.assert( io.out === ( io.in1 & io.in2 ) ) } //andi
 			.elsewhen(funct3==="h1".U) { verification.assert( io.out === ( io.in1 << io.in2(4,0) ) ) } //slli
 		}
+		when(opcode === "h33".U && funct3 === "h0".U){
+			when(funct3==="h0".U)	{
+			when(funct7==="h0".U)	{     verification.assert( io.out === (io.in1 + io.in2) )} //add
+			.elsewhen(funct7==="h20".U)	{ verification.assert(io.out=== (io.in1 - io.in2)) } //sub
+			.otherwise{			          verification.assert(io.out===(0.U)) }
+			}
+			.elsewhen(funct3==="h1".U)	{
+			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1 << io.in2(4,0)))} //sll
+			.otherwise{					  verification.assert(io.out===(0.U)) }
+			}
+		.elsewhen(funct3==="h2".U)	{
+			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1.asSInt < io.in2.asSInt).asUInt)} //slt
+			.otherwise{					  verification.assert(io.out:===0.U) }
+			}
+		.elsewhen(funct3==="h3".U)	{
+			when(funct7==="h0".U)	{	  verification.assert(io.out === Mux(io.in1 < io.in2, 1.U, 0.U)) } //sltu
+			.otherwise{					  verification.assert(io.out===0.U)	}
+			}
+		.elsewhen(funct3==="h4".U)	{
+			when(funct7==="h0".U)	{	  verification.assert(io.out === io.in1 ^ io.in2) } //xor
+			.otherwise{					  verification.assert(io.out===0.U)	}
+			}
+		.elsewhen(funct3==="h5".U)	{
+			when(funct7==="h0".U)	{	  verification.assert(io.out === io.in1 >> io.in2(4,0)) } //srl
+			.elsewhen(funct7==="h20".U)	{ when     (io.in1(31) === 0.U){ verification.assert(io.out === io.in1 >> io.in2(4,0)) }
+
+																					.otherwise{verification.assert(io.out === io.in1 >> io.in2(4,0) | ("hFFFF_FFFF".U << (32.U - io.in2(4,0)))) }
+																					} //sra
+			.otherwise{					  verification.assert(io.out===0.U) }
+			}
+		.elsewhen(funct3==="h6".U)	{
+			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1 | io.in2)) } // or
+			.otherwise{					  verification.assert(io.out===0.U)	}
+			}
+  	.elsewhen(funct3==="h7".U)	{
+			when(funct7==="h0".U)	{	 verification.assert(io.out === (io.in1 & io.in2)) } //and
+			.otherwise{					 verification.assert(io.out===0.U) }
+			} .otherwise{				 verification.assert(io.out===0.U)}
+		}.otherwise{					 verification.assert(io.out===0.U) }
 
 	}
-
 }
 
 // Verilog Generation
