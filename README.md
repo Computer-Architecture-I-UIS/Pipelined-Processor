@@ -7,8 +7,26 @@
 The launch of the RISC-V Instruction Set Architecture (ISA) in 2011 has allowed an increase in the use of RISC-V in many processors, microcontrollers, among others. Due to its high versatility besides, it is an open ISA (allows further expansion of the instruction set by third parties). Designed by a non-profit foundation, known as the RISC-V Foundation¹. In this project, we show a 3-stage processor design (Fetch, Execute and Memory & WriteBack), as well as the application of the Pipeline technique to the processor. The project will consist of the following sections: Processor, which will show the design of the processor and its most important characteristics; Pipelined Processor, explanation of the Pipeline technique applied to the processor; Formal Verification, this section presents the verification applied to each block of the processor in addition to the TOP circuit; Example Execution, examples of some programs in Assembly and C that are executed in the designed processor; and finally, Conclusions and References.
 
 ## Processor
+In the figure below, we show our processor. The Datapath allows fetching the instruction in the instruction memory (it stores the whole program or the instructions to be executed), which can be an operation in the ALU or a jump, or a branch. Finally, write the result of the operation or read any data previously stored in memory and give the next instruction to execute through the program counter. On the other hand, the Controlpath has the function of controlling all Datapath activities.
 
+Inside of the Datapath, we can find out some digital blocks, for example:
+* *Instruction Memory*: To store all instructions to be executed in the processor.
+* *Instruction Decode*: It has the function of decode each one instruction before sending this decode instruction to the registers bank.
+* *ALU*: To do all the operations arithmetic logical such as addition, subtraction, OR, AND, XOR, shift right, shift left, among others.
+* *Memory*: To store output ALU or read any other data storing previous on the memory.
+
+Finally, the TOP circuit designed allows to package all the processor blocks besides, contains the program counter, and the registers banks as well.
+ 
 ## Pipelined Processor
+
+### Instruction Fetch
+The first stage of the pipeline consist of the program counter and Instruction Memory.
+
+### Execute 
+The next stage consist of Instruction Decode, the registers bank and the ALU.
+
+### Write & Memory Back
+Only the memory is in the last stage of the pipeline.
 
 ## Formal Verification
 
