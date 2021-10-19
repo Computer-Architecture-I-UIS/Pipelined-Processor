@@ -4,7 +4,7 @@ import chisel3._
 import chisel3.util._
 
 
-class Memo extends Module {
+class Memory extends Module {
   val io = IO(new Bundle {
     val wen     = Input(Bool())
     val wrAddr  = Input(UInt(8.W))
