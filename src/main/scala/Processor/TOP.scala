@@ -7,7 +7,6 @@ import chisel3.util._
 
 class TOP extends Module{
 	val io = IO(new Bundle {
-		//val instruc = Input(UInt(32.W))
 		val reset = Input(Bool())
 		val out = Output(UInt(32.W))
 })
@@ -16,13 +15,26 @@ class TOP extends Module{
 	val InstDeco = Module(new InstDeco)
 	val ALU = Module(new ALU)
 	val InstMem = Module(new InstMem)
-	val Memo = Module(new Memo)
+	val memory = Module(new Memory)
 	val control = Module(new control)
 
 	// **** Starting Program Counter ****
 	val addrI = RegInit(0.U(32.W))
 
-	// **** Stating Registers Bank
+	// **** Starting Pipeline Registers ****
+	// First stage -> Second stage
+	val regPipeEx = RegInit(0.U(32.W)) // Pipeline Register between First stage and Second stage
+	val regMemDeco = RegInit(0.U(32.W)) // Pipeline Register between InstMem and InstDeco
+
+	// Second Stage -> Third stage
+	val regPipeMWB = RegInit(0.U(32.W)) // Pipeline Register between second stage and third stage for Address PC
+	val regPipeALU = RegInit(0.U(32.W)) // Pipeline Register between second stage and third stage for Output ALU
+	val muxRegOfVecPipe = RegInit(0.U(4.W))
+	val regPipeimm = RegInit(0.U(32.W))
+	val regPipemuxren = RegInit(0.U(1.W))
+	val regPipemuxwen = RegInit(0.U(1.W))
+
+	//*************************************************
 	val RegOfVec = RegInit(VecInit(Seq.fill(32)(0.U(32.W))))
 
 	//Starting Instructions object
@@ -33,28 +45,37 @@ class TOP extends Module{
 
 	//addrI (Address Instructions memory)
 	InstMem.io.addrI := addrI
+	regPipeEx := addrI
+	val nextregPipeEx = regPipeEx // Pipeline register to Address PC for First and Second stage.
+	regPipeMWB := regPipeEx
+	val nextregPipeMWB = regPipeMWB // Pipeline register to Address PC for Second and third stage.
+
 
 	//Instruction (Output InstMem - Input InstDeco)
-	InstDeco.io.instruc := InstMem.io.instruc //InstDeco.io.instruc := io.instruc
+	regMemDeco := InstMem.io.instruc
+	val nextregMemDeco = regMemDeco
+	InstDeco.io.instruc := nextregMemDeco // Connection between Output InstMem and Input InstDeco. Pipeline register
 
 	//ALU (Input state - Output out)
 	ALU.io.instruc := InstDeco.io.state
-	ALU.io.in1   := Mux(control.io.muxALUin1, RegOfVec(InstDeco.io.rs1), 0.U)
-	when(control.io.muxALUin2===2.U){ //multiplexor de control in2
+	ALU.io.in1 := Mux(control.io.muxALUin1, RegOfVec(InstDeco.io.rs1), 0.U)
+	when(control.io.muxALUin2 === 2.U){
 		ALU.io.in2 := RegOfVec(InstDeco.io.rs2)
-	} .elsewhen(control.io.muxALUin2===1.U){
+	} .elsewhen(control.io.muxALUin2 === 1.U){
 		ALU.io.in2 := InstDeco.io.imm.asUInt
 	} .otherwise{
 		ALU.io.in2 := 0.U
 	}
-	io.out       := ALU.io.out
+	regPipeALU := ALU.io.out
+	var nextregPipeALU = regPipeALU
+	io.out       := nextregPipeALU
 
 	//Starting  Inputs Memory
-	Memo.io.wen := 0.U(1.W)
-	Memo.io.ren := 0.U(1.W)
-	Memo.io.wrAddr := 0.U(8.W)
-	Memo.io.wrData := 0.U(32.W)
-	Memo.io.rdAddr := 0.U(8.W)
+	Memory.io.wen := 0.U(1.W)
+	Memory.io.ren := 0.U(1.W)
+	Memory.io.wrAddr := 0.U(8.W)
+	Memory.io.wrData := 0.U(32.W)
+	Memory.io.rdAddr := 0.U(8.W)
 
 	//Mux Control//
 
@@ -70,32 +91,44 @@ class TOP extends Module{
 	}
 
 	//Mux Registers bank
-	when(control.io.muxRegOfVec===0.U){
-		RegOfVec(InstDeco.io.rd) := addrI + 1.U
-	} .elsewhen(control.io.muxRegOfVec===1.U){
+
+	muxRegOfVecPipe := control.io.muxRegOfVec
+	val nextmuxRegOfVecPipe = muxRegOfVecPipe
+
+	regPipeimm :=  InstDeco.io.imm
+	val nextregPipeimm = regPipeimm
+
+	when(nextmuxRegOfVecPipe===0.U){
+		RegOfVec(InstDeco.io.rd) := nextregPipeMWB + 1.U
+	} .elsewhen(nextmuxRegOfVecPipe===1.U){
 		RegOfVec(InstDeco.io.rd) := Memo.io.rdData
-	} .elsewhen(control.io.muxRegOfVec===2.U){
+	} .elsewhen(nextmuxRegOfVecPipe===2.U){
 		RegOfVec(InstDeco.io.rd) := Memo.io.rdData(7,0)
-	} .elsewhen(control.io.muxRegOfVec===3.U){
+	} .elsewhen(nextmuxRegOfVecPipe===3.U){
 		RegOfVec(InstDeco.io.rd) := Memo.io.rdData(15,0)
-	} .elsewhen(control.io.muxRegOfVec===4.U){
-		RegOfVec(InstDeco.io.rd) := InstDeco.io.imm.asUInt
-	} .elsewhen(control.io.muxRegOfVec===5.U){
-		RegOfVec(InstDeco.io.rd) := addrI + InstDeco.io.imm.asUInt
-	} .elsewhen(control.io.muxRegOfVec===6.U){
-		RegOfVec(InstDeco.io.rd) := ALU.io.out
-	} .elsewhen(control.io.muxRegOfVec===7.U){
+	} .elsewhen(nextmuxRegOfVecPipe===4.U){
+		RegOfVec(InstDeco.io.rd) := nextregPipeimm.asUInt
+	} .elsewhen(nextmuxRegOfVecPipe===5.U){
+		RegOfVec(InstDeco.io.rd) := nextregPipeMWB + nextregPipeimm.asUInt
+	} .elsewhen(nextmuxRegOfVecPipe===6.U){
+		RegOfVec(InstDeco.io.rd) := nextregPipeALU
+	} .elsewhen(nextmuxRegOfVecPipe===7.U){
 		RegOfVec(0) := 0.U
 	}
 
 	//Mux for write enable of Memory
-	Memo.io.wen := Mux(control.io.muxwen===1.U, 1.U, 0.U)
+	regPipemuxwen := control.io.muxwen
+	val nextregPipemuxwen = regPipemuxwen
+	Memo.io.wen := Mux(nextregPipemuxren===1.U, 1.U, 0.U)
 
 	//Mux for read enable of Memory
-	Memo.io.ren := Mux(control.io.muxren===1.U, 1.U, 0.U)
+	regPipemuxren := control.io.muxren
+	val nextregPipemuxren = regPipemuxren
+	Memo.io.ren := Mux(nextregPipemuxren===1.U, 1.U, 0.U)
 
 	//Mux for write address of Memory
 	Memo.io.wrAddr := Mux(control.io.muxwrAddr===1.U, RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt, 0.U)
+
 
 	//Mux for read address of Memory
 	Memo.io.rdAddr := Mux(control.io.muxrdAddr===1.U, RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt, 0.U)
@@ -110,9 +143,6 @@ class TOP extends Module{
 	} .elsewhen(control.io.muxwrData===3.U){
 		Memo.io.wrData := 0.U
 	}
-
-
-
 
 }
 
