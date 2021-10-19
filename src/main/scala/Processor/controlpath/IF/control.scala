@@ -20,11 +20,6 @@ class Control extends Module{
 		val muxwrData = Output(UInt(2.W))   // Seleccion del dato de la memoria
 })
 
-  muxwen := opcode(6,2) === 8.U
-  muxren := opcode(6,2) === 0.U
-  muxALUint := opcode(5)===1.U
-  muxrd := (opcode(6,2) === 8.U) && (opcode(6,2) === 0.U)
-
 	//inicializacion del objeto de instrucciones
 val ins = Instructions
 
