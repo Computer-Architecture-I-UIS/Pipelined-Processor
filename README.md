@@ -53,8 +53,6 @@ The pipeline processor can execute the following instructions
 - ```sltu``` - set immediate
 - ```slti``` - set unsigned
 - ```sltiu``` - set immediate unsigned
-
-No puede ejecutar
 - ```lui``` - load upper immediate
 - ```auipc``` - add upper immediate to PC
 
