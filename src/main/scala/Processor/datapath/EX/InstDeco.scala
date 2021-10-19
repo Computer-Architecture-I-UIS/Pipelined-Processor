@@ -409,6 +409,39 @@ if (formal){
 			//Rule 20 andi instruction
 		}.elsewhen((opcode === "h13".U) && (funct3 === "h7".U)){
 			verification.assert(io.state === ins.andi)
+			//Rule 21 and instruction
+		}.elsewhen((opcode === "h73".U) && (funct3 === "h0".U)){
+			verification.assert(io.state === ins.ebreak)
+			//Rule 22 and instruction
+		}.elsewhen((opcode === "h73".U) && (funct3 === "h1".U)){
+			verification.assert(io.state === ins.csrrw)
+			//Rule 23 and instruction
+		}.elsewhen((opcode === "h73".U) && (funct3 === "h2".U)){
+			verification.assert(io.state === ins.csrrs)
+			//Rule 24 and instruction
+		}.elsewhen((opcode === "h73".U) && (funct3 === "h3".U)){
+			verification.assert(io.state === ins.csrrc)
+			//Rule 25 and instruction
+		}.elsewhen((opcode === "h73".U) && (funct3 === "h5".U)){
+			verification.assert(io.state === ins.csrrwi)
+			//Rule 26 and instruction
+		}.elsewhen((opcode === "h73".U) && (funct3 === "h6".U)){
+			verification.assert(io.state === ins.csrrsi)
+			//Rule 27 and instruction
+		}.elsewhen((opcode === "h73".U) && (funct3 === "h7".U)){
+			verification.assert(io.state === ins.csrrci)
+			//Rule 28 and instruction
+		}.elsewhen(opcode === "h67".U){
+			verification.assert((io.state === ins.jalr) && (io.imm === io.instruc(31,20).asSInt))
+			//Rule 29 and instruction
+		}.elsewhen(opcode === "h6f".U){
+			verification.assert((io.state === ins.jal) && (io.imm === Cat(io.instruc(31),io.instruc(19,12),io.instruc(20),io.instruc(30,21),0.U(1.W)).asSInt))
+			//Rule 30 and instruction
+		}.elsewhen(opcode === "h17".U){
+			verification.assert((io.state === ins.auipc) && (io.imm === Cat(io.instruc(31,12),0.U(12.W)).asSInt))
+			//Rule 31 and instruction
+		}.elsewhen(opcode === "h37".U){
+			verification.assert((io.state === ins.lui) && (io.imm === Cat(io.instruc(31,12),0.U(12.W)).asSInt))
 		}
 	}
 }
