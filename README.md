@@ -32,7 +32,60 @@ The next stage consist of Instruction Decode, the registers bank and the ALU.
 ### Write & Memory Back
 Only the memory is in the last stage of the pipeline.
 
+## Instruction list
+The pipeline processor can execute the following instructions
+- ```sll``` - shift left logical
+- ```slli``` - shift left logical immediate
+- ```srl``` - shift right logical
+- ```srli``` - shift right logical
+- ```sra``` - shift right arithmetic
+- ```srai``` - shift right arithmetic immediate
+- ```add``` - add
+- ```addi``` - add immediate
+- ```sub``` - subtract
+- ```xor``` - xor
+- ```xori``` - xor immediate
+- ```and``` - and
+- ```andi``` - and immediate
+- ```or``` - or
+- ```ori``` - or immediate
+- ```slt``` - set
+- ```sltu``` - set immediate
+- ```slti``` - set unsigned
+- ```sltiu``` - set immediate unsigned
+
+No puede ejecutar
+- ```lui``` - load upper immediate
+- ```auipc``` - add upper immediate to PC
+
 ## Formal Verification
+The verification of the blocks that constitute the pipelined processor was performed, following the commands shown below.
+
+### Commands to perform formal verification
+
+* First clone the repository with the following command:
+
+```sh
+git clone https://github.com/Computer-Architecture-I-UIS/workshop_formal-silva-florez.git
+```
+
+* Inside the /Pipelined-Processor folder, open a terminal and run the following commands:
+
+```sh
+./do_gen.sh Block_name
+```
+
+```sh
+Sby -f formal/ Block_name.sby
+```
+Block_name is replaced by the name of the block to be verified, for example, to verify the ALU the following commands are used.
+```sh
+./do_gen.sh ALU
+```
+
+```sh
+Sby -f formal/ ALU.sby
+```
 
 ## Example Execution
 
