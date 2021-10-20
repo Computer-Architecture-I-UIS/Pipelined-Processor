@@ -58,7 +58,7 @@ class TOP (val formal:Boolean=false) extends Module{
 	InstDeco.io.instruc := nextregMemDeco // Connection between Output InstMem and Input InstDeco. Pipeline register
 
 	//ALU (Input state - Output out)
-	ALU.io.instruc := InstDeco.io.state
+	ALU.io.state := InstDeco.io.state
 	ALU.io.in1 := Mux(Control.io.muxALUin1, RegOfVec(InstDeco.io.rs1), 0.U)
 	when(Control.io.muxALUin2 === 2.U){
 		ALU.io.in2 := RegOfVec(InstDeco.io.rs2)

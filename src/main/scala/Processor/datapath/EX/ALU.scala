@@ -3,142 +3,153 @@ package Processor
 import chisel3._
 import chisel3.util._
 
-
 import chisel3.experimental._ // formal verification
 import chisel3.stage.ChiselStage // verilog, sverilog generation
 
 class ALU (val formal:Boolean=false) extends Module{
 	val io = IO(new Bundle {
-		val instruc = Input(UInt(32.W))
+		val state = Input(UInt(6.W))
 		val in1 = Input(UInt(32.W))
 		val in2 = Input(UInt(32.W))
-		val out = Output(UInt(32.W))
+		val out = Output(UInt(32.W))	
 	})
+	
+// shift
 
-	val opcode=Wire(UInt(7.W))
-	opcode:=io.instruc(6,0)
-	val funct3=Wire(UInt(3.W))
-	funct3:=io.instruc(14,12)
-	val funct7=Wire(UInt(7.W))
-	funct7:=io.instruc(31,25)
+val shifted = Wire(UInt(32.W))
+shifted := io.in1 >> io.in2(4,0)
 
+// addition
 
-	when(opcode==="h37".U)	{		io.out:=0.U		} //lui
-	.elsewhen(opcode==="h17".U)	{		io.out:=0.U		} //auipc
-	.elsewhen(opcode==="h13".U)	{
-		when(funct3==="h0".U)	{			io.out := io.in1 + io.in2		} //addi
-		.elsewhen(funct3==="h2".U)	{			io.out := (io.in1.asSInt < io.in2.asSInt).asUInt			} //slti
-		.elsewhen(funct3==="h3".U)	{			io.out := Mux(io.in1 < io.in2, 1.U, 0.U)			} //sltiu
-		.elsewhen(funct3==="h4".U)	{			io.out := io.in1 ^ io.in2			} //xori
-		.elsewhen(funct3==="h6".U)	{			io.out := io.in1 | io.in2			} //ori
-		.elsewhen(funct3==="h7".U)	{			io.out := io.in1 & io.in2			} //andi
-		.elsewhen(funct3==="h1".U)	{			io.out := io.in1 << io.in2(4,0)		} //slli
-		.elsewhen(funct3==="h5".U)	{
-			when(funct7==="h0".U)	{				io.out := io.in1 >> io.in2(4,0)				} //srli
-			.elsewhen(funct7==="h20".U)	{				when     (io.in1(31) === 0.U){ io.out := io.in1 >> io.in2(4,0) }
+val totalsum = Wire(UInt(33.W))
+totalsum := io.in1 + io.in2
 
-																					.otherwise{ io.out := io.in1 >> io.in2(4,0) | ("hFFFF_FFFF".U << (32.U - io.in2(4,0))) }
-																					} //srai
+// substraction
 
-			.otherwise{						io.out:=0.U						}
-			} .otherwise{						io.out:=0.U						}
+val totalsub = Wire(UInt(33.W))
+totalsub := io.in1 - io.in2
+	
+io.out := 0.U
+	
+val ins=Instructions
+	
+	switch(io.state){
+		  
+		is(ins.sll){    // shift left       
+			io.out := io.in1 << io.in2(4,0)
 		}
-	.elsewhen(opcode==="h33".U)	{
-		when(funct3==="h0".U)	{
-			when(funct7==="h0".U)	{				io.out := io.in1 + io.in2				} //add
-			.elsewhen(funct7==="h20".U)	{				io.out:=io.in1 - io.in2				} //sub
-			.otherwise{						io.out:=0.U						}
-			}
-		.elsewhen(funct3==="h1".U)	{
-			when(funct7==="h0".U)	{				io.out := io.in1 << io.in2(4,0)				} //sll
-			.otherwise{						io.out:=0.U					}
-			}
-		.elsewhen(funct3==="h2".U)	{
-			when(funct7==="h0".U)	{				io.out := (io.in1.asSInt < io.in2.asSInt).asUInt				} //slt
-			.otherwise{						io.out:=0.U				  	}
-			}
-		.elsewhen(funct3==="h3".U)	{
-			when(funct7==="h0".U)	{				io.out := Mux(io.in1 < io.in2, 1.U, 0.U)				} //sltu
-			.otherwise{					io.out:=0.U				}
-			}
-		.elsewhen(funct3==="h4".U)	{
-			when(funct7==="h0".U)	{				io.out := io.in1 ^ io.in2				} //xor
-			.otherwise{					io.out:=0.U				}
-			}
-		.elsewhen(funct3==="h5".U)	{
-			when(funct7==="h0".U)	{				io.out := io.in1 >> io.in2(4,0)				} //srl
-			.elsewhen(funct7==="h20".U)	{				when     (io.in1(31) === 0.U){ io.out := io.in1 >> io.in2(4,0) }
+		
+		is(ins.slli){    // shift left       
+			io.out := io.in1 << io.in2(4,0)
+		}
 
-																					.otherwise{ io.out := io.in1 >> io.in2(4,0) | ("hFFFF_FFFF".U << (32.U - 																						io.in2(4,0))) }
-																					} //sra
-			.otherwise{					io.out:=0.U				}
-			}
-		.elsewhen(funct3==="h6".U)	{
-			when(funct7==="h0".U)	{				io.out := io.in1 | io.in2				} // or
-			.otherwise{					io.out:=0.U				}
-			}
-  	.elsewhen(funct3==="h7".U)	{
-			when(funct7==="h0".U)	{				io.out := io.in1 & io.in2				} //and
-			.otherwise{					io.out:=0.U				}
-			} .otherwise{						io.out:=0.U						}
-		}.otherwise{					io.out:=0.U				}
+		is(ins.srl){    // shift right
+			io.out := io.in1 >> io.in2(4,0)
+		}
+		
+		is(ins.srli){    // shift right
+			io.out := io.in1 >> io.in2(4,0)
+		}
+
+		is(ins.sra){    // shift arithmetic right
+			when     (io.in1(31) === 0.U){ io.out := shifted }        
+			.otherwise{ io.out := shifted | ("hFFFF_FFFF".U << (32.U - io.in2(4,0))) } 
+		}
+		
+		is(ins.srai){    // shift arithmetic right
+			when     (io.in1(31) === 0.U){ io.out := shifted }        
+			.otherwise{ io.out := shifted | ("hFFFF_FFFF".U << (32.U - io.in2(4,0))) } 
+		}
+
+		is(ins.add){    // ADD
+			io.out := totalsum(31,0)
+		}
+		
+		is(ins.addi){    // ADD
+			io.out := totalsum(31,0)
+		}
+
+		is(ins.sub){    // SUB
+			io.out := totalsub(31,0)                        
+		}
+
+		is(ins.xor){    // XOR
+			io.out := io.in1 ^ io.in2
+		}
+		
+		is(ins.xori){    // XOR
+			io.out := io.in1 ^ io.in2
+		}
+
+		is(ins.or){    // OR
+			io.out := io.in1 | io.in2
+		}
+		
+		is(ins.ori){    // OR
+			io.out := io.in1 | io.in2
+		}
+
+		is(ins.and){    // AND
+			io.out := io.in1 & io.in2
+		}
+		
+		is(ins.andi){    // AND
+			io.out := io.in1 & io.in2
+		}
+
+		is(ins.slt){    // smaller than
+			io.out := (io.in1.asSInt < io.in2.asSInt).asUInt
+		}
+		
+		is(ins.slti){    // smaller than
+			io.out := (io.in1.asSInt < io.in2.asSInt).asUInt
+		}
+
+		is(ins.sltu){    // smaller than unsigned
+			io.out := Mux(io.in1 < io.in2, 1.U, 0.U)
+		}
+		
+		is(ins.sltiu){    // smaller than unsigned
+			io.out := Mux(io.in1 < io.in2, 1.U, 0.U)
+		}
+		
+		
+		
+		is(ins.beq){	// equal to
+			io.out := Mux(io.in1 === io.in2, 1.U, 0.U)	
+		}
+
+		is(ins.bne){	// not equal to
+			io.out := Mux(io.in1 === io.in2, 0.U, 1.U)
+		}	
+		
+		is(ins.blt){	// smaller than
+			io.out := (io.in1.asSInt < io.in2.asSInt).asUInt
+		}	
+
+		is(ins.bge){	// greater or equal to
+			io.out := (io.in1.asSInt < io.in2.asSInt).asUInt  ^ 1.U
+		}	
+		
+		is(ins.bltu){	// smaller than unsigned
+			io.out := Mux(io.in1 < io.in2, 1.U, 0.U)
+		}	
+
+		is(ins.bgeu){   // greater or equal to unsigned
+			io.out := Mux(io.in1 < io.in2, 0.U, 1.U) 
+		}
+
+
+	}
+	
 
 	// Formal verification
 	if (formal){
-		when(opcode === "h37".U || opcode === "h17".U){ // lui, auipc -> not implemented, so output is 0
-			verification.assert(io.out === 0.U)
-		}
-		when(opcode === "h13".U && funct3 === "h0".U){
-			when(funct3 === "h0".U) { verification.assert( io.out === ( io.in1 + io.in2 ) ) } // addi
-			.elsewhen(funct3==="h2".U) { verification.assert( io.out === (io.in1.asSInt < io.in2.asSInt).asUInt ) } //slti
-			.elsewhen(funct3==="h3".U) { verification.assert( io.out === Mux(io.in1 < io.in2, 1.U, 0.U) ) } //sltiu
-			.elsewhen(funct3==="h4".U) { verification.assert( io.out === ( io.in1 ^ io.in2 ) ) } //xori
-			.elsewhen(funct3==="h6".U) { verification.assert( io.out === ( io.in1 | io.in2 ) ) } //ori
-			.elsewhen(funct3==="h7".U) { verification.assert( io.out === ( io.in1 & io.in2 ) ) } //andi
-			.elsewhen(funct3==="h1".U) { verification.assert( io.out === ( io.in1 << io.in2(4,0) ) ) } //slli
-		}
-		when(opcode === "h33".U && funct3 === "h0".U){
-			when(funct3==="h0".U)	{
-			when(funct7==="h0".U)	{     verification.assert( io.out === (io.in1 + io.in2) )} //add
-			.elsewhen(funct7==="h20".U)	{ verification.assert(io.out=== (io.in1 - io.in2)) } //sub
-			.otherwise{			          verification.assert(io.out===(0.U)) }
-			}
-			.elsewhen(funct3==="h1".U)	{
-			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1 << io.in2(4,0)))} //sll
-			.otherwise{					  verification.assert(io.out===(0.U)) }
-			}
-		.elsewhen(funct3==="h2".U)	{
-			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1.asSInt < io.in2.asSInt).asUInt)} //slt
-			.otherwise{					  verification.assert(io.out===0.U) }
-			}
-		.elsewhen(funct3==="h3".U)	{
-			when(funct7==="h0".U)	{	  verification.assert(io.out === Mux(io.in1 < io.in2, 1.U, 0.U)) } //sltu
-			.otherwise{					  verification.assert(io.out===0.U)	}
-			}
-		.elsewhen(funct3==="h4".U)	{
-			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1 ^ io.in2)) } //xor
-			.otherwise{					  verification.assert(io.out===0.U)	}
-			}
-		.elsewhen(funct3==="h5".U)	{
-			when(funct7==="h0".U)	{	  verification.assert(io.out === io.in1 >> io.in2(4,0)) } //srl
-			.elsewhen(funct7==="h20".U)	{ when     (io.in1(31) === 0.U){ verification.assert(io.out === (io.in1 >> io.in2(4,0))) }
-
-																					.otherwise{verification.assert(io.out === (io.in1 >> io.in2(4,0) | ("hFFFF_FFFF".U << (32.U - io.in2(4,0))))) }
-																					} //sra
-			.otherwise{					  verification.assert(io.out===0.U) }
-			}
-		.elsewhen(funct3==="h6".U)	{
-			when(funct7==="h0".U)	{	  verification.assert(io.out === (io.in1 | io.in2)) } // or
-			.otherwise{					  verification.assert(io.out===0.U)	}
-			}
-  	.elsewhen(funct3==="h7".U)	{
-			when(funct7==="h0".U)	{	 verification.assert(io.out === (io.in1 & io.in2)) } //and
-			.otherwise{					 verification.assert(io.out===0.U) }
-			} .otherwise{				 verification.assert(io.out===0.U)}
-		}.otherwise{					 verification.assert(io.out===0.U) }
 
 	}
+
 }
+
 
 // Verilog Generation
 
@@ -151,3 +162,8 @@ object ALUDriver_Verilog extends App {
 object ALUDriver_SystemVerilog extends App {
 	(new ChiselStage).emitSystemVerilog(new ALU(formal=true),args)
 }
+
+
+
+
+
