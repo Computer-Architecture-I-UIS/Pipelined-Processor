@@ -10,7 +10,7 @@ The launch of the RISC-V Instruction Set Architecture (ISA) in 2011 has allowed 
 In the figure below, we show our processor. The Datapath allows fetching the instruction in the instruction memory (it stores the whole program or the instructions to be executed), which can be an operation in the ALU or a jump, or a branch. Finally, write the result of the operation or read any data previously stored in memory and give the next instruction to execute through the program counter. On the other hand, the Controlpath has the function of controlling all Datapath activities.
 
 <p align= "center">
-<img src="https://github.com/Computer-Architecture-I-UIS/Pipelined-Processor/blob/main/Diagram.png" width="100%">
+<img src="https://github.com/Computer-Architecture-I-UIS/Pipelined-Processor/blob/main/Picture_Reg.png" width="100%">
 </p>
 
 Inside of the Datapath, we can find out some digital blocks, for example:
