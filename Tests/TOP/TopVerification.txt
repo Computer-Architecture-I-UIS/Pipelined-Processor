@@ -1,0 +1,5 @@
+First set of Rules: Operations between rs1 and rs2 based on Instruction decode and control 
+
+Rule 8 (Shift left) and Rule 13 (Smaller than) falied the verfication. The other 14 rules
+passed the verification
+
