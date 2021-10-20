@@ -8,7 +8,6 @@ import chisel3.stage.ChiselStage // verilog, sverilog generation
 
 class TOP (val formal:Boolean=false) extends Module{
 	val io = IO(new Bundle {
-		val reset = Input(Bool())
 		val out = Output(UInt(32.W))
 })
 
@@ -149,7 +148,7 @@ class TOP (val formal:Boolean=false) extends Module{
 		val init = RegInit(false.B)
 
 		when(init === false.B){
-			verification.assume(io.reset)
+			//verification.assume(reset)
 			init := true.B
 		}
 	}
