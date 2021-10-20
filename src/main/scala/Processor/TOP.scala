@@ -149,7 +149,7 @@ class TOP (val formal:Boolean=false) extends Module{
 		when(init === false.B){
 			verification.assume(Module.reset.asBool())
 			init := true.B
-			//First set of Rules: Operations between rs1 and rs2 based on Instruction decode and control 
+			//First set of Rules: Operations in the ALU based on Instruction decode and control 
 			//Rule 1 addi between rs1 and rs2
 		}.elsewhen((Control.io.muxALUin2 === 2.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.addi)){
 			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) + RegOfVec(InstDeco.io.rs2)))
@@ -168,10 +168,10 @@ class TOP (val formal:Boolean=false) extends Module{
 			//Rule 6 shift right between rs1 and rs2
 		}.elsewhen((Control.io.muxALUin2 === 2.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.srl)){
 			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) >> RegOfVec(InstDeco.io.rs2)(4,0)))
-			//Rule 7 shift right inmediate between rs1 and rs2
+			//Rule 7 shift right immediate between rs1 and rs2
 		}.elsewhen((Control.io.muxALUin2 === 2.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.srli)){
 			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) >> RegOfVec(InstDeco.io.rs2)(4,0)))
-			//Rule 8 shift left inmediate between rs1 and rs2
+			//Rule 8 shift left immediate between rs1 and rs2
 		}.elsewhen((Control.io.muxALUin2 === 2.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.slli)){
 			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) << RegOfVec(InstDeco.io.rs2)(4,0)))
 			//Rule 8 shift left between rs1 and rs2
@@ -192,7 +192,7 @@ class TOP (val formal:Boolean=false) extends Module{
 			//Rule 13 smaller than between rs1 and rs2
 	//	}.elsewhen((Control.io.muxALUin2 === 2.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.slt)){
 	//		verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) < RegOfVec(InstDeco.io.rs2)))
-			//Rule 14 smaller than inmediate between rs1 and rs2
+			//Rule 14 smaller than immediate between rs1 and rs2
 		}.elsewhen((Control.io.muxALUin2 === 2.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.slti)){
 			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) < RegOfVec(InstDeco.io.rs2)))
 			//Rule 15 equal to between rs1 and rs2
@@ -200,6 +200,57 @@ class TOP (val formal:Boolean=false) extends Module{
 			verification.assert(ALU.io.out === 1.U)
 			//Rule 16 not equal to between rs1 and rs2
 		}.elsewhen((Control.io.muxALUin2 === 2.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.bne) && (RegOfVec(InstDeco.io.rs1) === RegOfVec(InstDeco.io.rs2))){
+			verification.assert(ALU.io.out === 0.U)
+			//Rule 17 addi between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.addi)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) + InstDeco.io.imm.asUInt))
+			//Rule 18 sub between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.sub)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) - InstDeco.io.imm.asUInt))
+			//Rule 19 xor between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.xor)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1)^InstDeco.io.imm.asUInt))
+			//Rule 20 xori between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.xori)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1)^InstDeco.io.imm.asUInt))
+			//Rule 21 add between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.add)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1)+InstDeco.io.imm.asUInt))
+			//Rule 22 shift right between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.srl)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) >> InstDeco.io.imm(4,0).asUInt))
+			//Rule 23 shift right immediate between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.srli)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) >> InstDeco.io.imm(4,0)asUInt))
+			//Rule 24 shift left immediate between rs1 and imm
+	//	}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.slli)){
+	//		verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) << InstDeco.io.imm(4,0)asUInt))
+			//Rule 25 shift left between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.sll)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) << InstDeco.io.imm(4,0)asUInt))
+			//Rule 26 or between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.or)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1)|InstDeco.io.imm.asUInt))
+			//Rule 27 ori between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.ori)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1)|InstDeco.io.imm.asUInt))
+			//Rule 28 and between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.and)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) & InstDeco.io.imm.asUInt))
+			//Rule 29 andi between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.andi)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) & InstDeco.io.imm.asUInt))
+			//Rule 30 smaller than between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.slt)){
+			verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) < InstDeco.io.imm.asUInt))
+	//		//Rule 31 smaller than immediate between rs1 and imm
+	//	}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.slti)){
+	//		verification.assert(ALU.io.out === (RegOfVec(InstDeco.io.rs1) < InstDeco.io.imm.asUInt))
+			//Rule 32 equal to between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.beq) && (RegOfVec(InstDeco.io.rs1) ===InstDeco.io.imm.asUInt)){
+			verification.assert(ALU.io.out === 1.U)
+			//Rule 33 not equal to between rs1 and imm
+		}.elsewhen((Control.io.muxALUin2 === 1.U) && (Control.io.muxALUin1 === 1.U) && (InstDeco.io.state === Instructions.bne) && (RegOfVec(InstDeco.io.rs1) === InstDeco.io.imm.asUInt)){
 			verification.assert(ALU.io.out === 0.U)
 		}
 	}

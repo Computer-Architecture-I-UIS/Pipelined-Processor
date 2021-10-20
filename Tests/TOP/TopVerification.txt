@@ -1,5 +1,13 @@
-First set of Rules: Operations between rs1 and rs2 based on Instruction decode and control 
 
-Rule 8 (Shift left) and Rule 13 (Smaller than) falied the verfication. The other 14 rules
-passed the verification
+First set of Rules: Operations in the ALU based on Instruction decode and control 
+
+Rules that failed test:
+
+- Rule 8 : Shift left not immediate between rs1 and rs2
+- Rule 13 : Smaller than not immediate rs1 and rs2
+- Rule 24 : Shift left immediate between rs1 and imm
+- Rule 31 : Smaller tahn immediate between rs1 and imm
+
+Number of Rules: 33
+
 
