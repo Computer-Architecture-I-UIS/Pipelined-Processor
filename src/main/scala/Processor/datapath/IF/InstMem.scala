@@ -32,6 +32,9 @@ io.instruc:=0.U
 	.elsewhen (io.addrI === 12.U){ io.instruc := "b000000000111_00000_000_00001_0010011".U }
 	.elsewhen (io.addrI === 13.U){ io.instruc := "b000000000111_00000_000_00001_0010011".U }
 	.elsewhen (io.addrI === 14.U){ io.instruc := "b000000001111_00000_000_00001_0010011".U }
+	.elsewhen (io.addrI === 15.U){ io.instruc := "b000000001111_00000_000_00001_0010011".U }
+	.elsewhen (io.addrI === 16.U){ io.instruc := "b0100000_00001_00000_000_00001_0110011".U }
+	.elsewhen (io.addrI === 17.U){ io.instruc := "b1_1111110111_1_11111111_00001_1101111".U }
 
 
 }
