@@ -4,12 +4,10 @@
 generated
 ALU_formal
 
-formal/ALU
-formal/InstDeco
-formal/TOP
-formal/InstMem
-formal/Memory
-formal/Control
+formal/*/
+
+Verilog/*
+!Verilog/TOP_tb.v
 
 .metals/
 .bsp/

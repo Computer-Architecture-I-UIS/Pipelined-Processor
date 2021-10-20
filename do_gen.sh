@@ -40,6 +40,7 @@ fi
 sbt "runMain $mod"
 
 rm ./generated/*
+cp *.v ./Verilog
 mv *.sv ./generated/
 mv *.v ./generated/
 rm *.json
