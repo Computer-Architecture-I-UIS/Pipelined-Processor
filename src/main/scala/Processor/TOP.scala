@@ -29,8 +29,8 @@ class TOP (val formal:Boolean=false) extends Module{
 	// Second Stage -> Third stage
 	val regPipeMWB = RegInit(0.U(32.W)) // Pipeline Register between second stage and third stage for Address PC
 	val regPipeALU = RegInit(0.U(32.W)) // Pipeline Register between second stage and third stage for Output ALU
-	val regAddrRD = RegInit(0.U(5.W))
-	val regAddrRD2 = RegInit(0.U(5.W))
+	//val regAddrRD = RegInit(0.U(5.W))
+	//val regAddrRD2 = RegInit(0.U(5.W))
 	val muxRegOfVecPipe = RegInit(0.U(4.W))
 	val regPipeimm = RegInit(0.U(32.W))
 	val regPipemuxren = RegInit(0.U(1.W))
@@ -100,24 +100,24 @@ class TOP (val formal:Boolean=false) extends Module{
 	regPipeimm :=  InstDeco.io.imm.asUInt
 	val nextregPipeimm = regPipeimm
 	
-	regAddrRD := InstDeco.io.rd
-	regAddrRD2 := regAddrRD
-	val nextRD = regAddrRD2
+	//regAddrRD := InstDeco.io.rd
+	//regAddrRD2 := regAddrRD
+	//val nextRD = regAddrRD2
 
 	when(nextmuxRegOfVecPipe===0.U){
-		RegOfVec(nextRD) := nextregPipeMWB
+		RegOfVec(InstDeco.io.rd) := nextregPipeMWB
 	} .elsewhen(nextmuxRegOfVecPipe===1.U){
-		RegOfVec(nextRD) := Memory.io.rdData
+		RegOfVec(InstDeco.io.rd) := Memory.io.rdData
 	} .elsewhen(nextmuxRegOfVecPipe===2.U){
-		RegOfVec(nextRD) := Memory.io.rdData(7,0)
+		RegOfVec(InstDeco.io.rd) := Memory.io.rdData(7,0)
 	} .elsewhen(nextmuxRegOfVecPipe===3.U){
-		RegOfVec(nextRD) := Memory.io.rdData(15,0)
+		RegOfVec(InstDeco.io.rd) := Memory.io.rdData(15,0)
 	} .elsewhen(nextmuxRegOfVecPipe===4.U){
-		RegOfVec(nextRD) := nextregPipeimm.asUInt
+		RegOfVec(InstDeco.io.rd) := nextregPipeimm.asUInt
 	} .elsewhen(nextmuxRegOfVecPipe===5.U){
-		RegOfVec(nextRD) := nextregPipeMWB + nextregPipeimm.asUInt
+		RegOfVec(InstDeco.io.rd) := nextregPipeMWB + nextregPipeimm.asUInt
 	} .elsewhen(nextmuxRegOfVecPipe===6.U){
-		RegOfVec(nextRD) := nextregPipeALU
+		RegOfVec(InstDeco.io.rd) := nextregPipeALU
 	} .elsewhen(nextmuxRegOfVecPipe===7.U){
 		RegOfVec(0) := 0.U
 	}
