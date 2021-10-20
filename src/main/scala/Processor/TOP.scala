@@ -99,7 +99,7 @@ class TOP (val formal:Boolean=false) extends Module{
 	val nextregPipeimm = regPipeimm
 
 	when(nextmuxRegOfVecPipe===0.U){
-		RegOfVec(InstDeco.io.rd) := nextregPipeMWB + 1.U
+		RegOfVec(InstDeco.io.rd) := nextregPipeMWB
 	} .elsewhen(nextmuxRegOfVecPipe===1.U){
 		RegOfVec(InstDeco.io.rd) := Memory.io.rdData
 	} .elsewhen(nextmuxRegOfVecPipe===2.U){
