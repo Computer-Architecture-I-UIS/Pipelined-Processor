@@ -1,0 +1,78 @@
+
+./dumped_files/exe.elf:     file format elf32-littleriscv
+
+
+Disassembly of section .memory:
+
+00000000 <_start-0x80>:
+   0:	0000                	unimp
+   2:	0000                	unimp
+   4:	00000093          	li	ra,0
+   8:	00000113          	li	sp,0
+   c:	00000193          	li	gp,0
+  10:	00000213          	li	tp,0
+  14:	00000293          	li	t0,0
+  18:	00000313          	li	t1,0
+  1c:	00000393          	li	t2,0
+  20:	00000413          	li	s0,0
+  24:	00000493          	li	s1,0
+  28:	00000513          	li	a0,0
+  2c:	00000593          	li	a1,0
+  30:	00000613          	li	a2,0
+  34:	00000693          	li	a3,0
+  38:	00000713          	li	a4,0
+  3c:	00000793          	li	a5,0
+  40:	00000813          	li	a6,0
+  44:	00000893          	li	a7,0
+  48:	00000913          	li	s2,0
+  4c:	00000993          	li	s3,0
+  50:	00000a13          	li	s4,0
+  54:	00000a93          	li	s5,0
+  58:	00000b13          	li	s6,0
+  5c:	00000b93          	li	s7,0
+  60:	00000c13          	li	s8,0
+  64:	00000c93          	li	s9,0
+  68:	00000d13          	li	s10,0
+  6c:	00000d93          	li	s11,0
+  70:	00000e13          	li	t3,0
+  74:	00000e93          	li	t4,0
+  78:	00000f13          	li	t5,0
+  7c:	00000f93          	li	t6,0
+
+00000080 <_start>:
+  80:	02500313          	li	t1,37
+  84:	00100293          	li	t0,1
+
+00000088 <.inicio>:
+  88:	00137393          	andi	t2,t1,1
+  8c:	00538663          	beq	t2,t0,98 <.impar>
+
+00000090 <.par>:
+  90:	00135313          	srli	t1,t1,0x1
+  94:	ff5ff0ef          	jal	ra,88 <.inicio>
+
+00000098 <.impar>:
+  98:	00630e33          	add	t3,t1,t1
+  9c:	006e0e33          	add	t3,t3,t1
+  a0:	001e0313          	addi	t1,t3,1
+  a4:	fe5ff0ef          	jal	ra,88 <.inicio>
+  a8:	fd9ff06f          	j	80 <_start>
+
+Disassembly of section .riscv.attributes:
+
+00000000 <.riscv.attributes>:
+   0:	1e41                	addi	t3,t3,-16
+   2:	0000                	unimp
+   4:	7200                	flw	fs0,32(a2)
+   6:	7369                	lui	t1,0xffffa
+   8:	01007663          	bgeu	zero,a6,14 <_start-0x6c>
+   c:	0014                	0x14
+   e:	0000                	unimp
+  10:	7205                	lui	tp,0xfffe1
+  12:	3376                	fld	ft6,376(sp)
+  14:	6932                	flw	fs2,12(sp)
+  16:	7032                	flw	ft0,44(sp)
+  18:	5f30                	lw	a2,120(a4)
+  1a:	326d                	jal	fffff9c4 <end+0xfffff918>
+  1c:	3070                	fld	fa2,224(s0)
+	...

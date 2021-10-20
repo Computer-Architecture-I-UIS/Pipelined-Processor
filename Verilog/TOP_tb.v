@@ -28,7 +28,7 @@ TOP Processor (
  //   $monitor("At time %t, value = %h (%0d)", $time, value, value);
     $dumpfile("test_TOP.vcd"); // Archivo en el que se guardarán los resultados de la simulación
     $dumpvars;
-    #(1000); // Configurar el tiempo de simulación
+    #(10000); // Configurar el tiempo de simulación
     $finish;
     end
 endmodule
