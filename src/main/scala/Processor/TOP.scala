@@ -30,6 +30,7 @@ class TOP (val formal:Boolean=false) extends Module{
 	val regPipeMWB = RegInit(0.U(32.W)) // Pipeline Register between second stage and third stage for Address PC
 	val regPipeALU = RegInit(0.U(32.W)) // Pipeline Register between second stage and third stage for Output ALU
 	val regAddrRD = RegInit(0.U(5.W))
+	val regAddrRD2 = RegInit(0.U(5.W))
 	val muxRegOfVecPipe = RegInit(0.U(4.W))
 	val regPipeimm = RegInit(0.U(32.W))
 	val regPipemuxren = RegInit(0.U(1.W))
@@ -100,7 +101,8 @@ class TOP (val formal:Boolean=false) extends Module{
 	val nextregPipeimm = regPipeimm
 	
 	regAddrRD := InstDeco.io.rd
-	val nextRD = regAddrRD
+	regAddrRD2 := regAddrRD
+	val nextRD = regAddrRD2
 
 	when(nextmuxRegOfVecPipe===0.U){
 		RegOfVec(nextRD) := nextregPipeMWB
