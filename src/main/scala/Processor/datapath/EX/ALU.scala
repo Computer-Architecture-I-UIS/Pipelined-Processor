@@ -145,6 +145,64 @@ val ins=Instructions
 
 	// Formal verification
 	if (formal){
+  
+		when(io.state === ins.sll){    // shift left       
+			verification.assert(io.out === (io.in1 << io.in2(4,0))(31,0))
+		}
+	
+		when(io.state === ins.slli){    // shift left       
+			verification.assert(io.out === (io.in1 << io.in2(4,0))(31,0))
+		}
+
+		when(io.state === ins.srl){    // shift right
+			verification.assert(io.out === (io.in1 >> io.in2(4,0)))
+		}
+		
+		when(io.state === ins.srli){    // shift right
+			verification.assert(io.out === (io.in1 >> io.in2(4,0)))
+		}
+
+		when(io.state === ins.sra){    // shift arithmetic right
+			when     (io.in1(31) === 0.U){ io.out === shifted }        
+			.otherwise{ io.out === (shifted | ("hFFFF_FFFF".U << (32.U - io.in2(4,0)))) } 
+		}
+		
+		when(io.state === ins.srai){    // shift arithmetic right
+			when     (io.in1(31) === 0.U){ io.out === shifted }        
+			.otherwise{ io.out === (shifted | ("hFFFF_FFFF".U << (32.U - io.in2(4,0)))) } 
+		}
+
+		when(io.state === ins.add){    // ADD
+			verification.assert(io.out === (totalsum(31,0)))
+		}
+		
+		when(io.state === ins.addi){    // ADD
+			verification.assert(io.out === (totalsum(31,0)))
+		}
+
+		when(io.state === ins.sub){    // SUB
+			verification.assert(io.out === (totalsub(31,0)))                      
+		}
+
+		when(io.state === ins.xor){    // XOR
+			verification.assert(io.out === (io.in1 ^ io.in2))
+		}
+		
+		when(io.state === ins.xori){    // XOR
+			verification.assert(io.out === (io.in1 ^ io.in2))
+		}
+
+		when(io.state === ins.or){    // OR
+			verification.assert(io.out === (io.in1 | io.in2))
+		}
+		
+		when(io.state === ins.ori){    // OR
+			verification.assert(io.out === (io.in1 | io.in2))
+		}
+
+		when(io.state === ins.and){    // AND
+			verification.assert(io.out === (io.in1 & io.in2))
+		}
 
 	}
 
