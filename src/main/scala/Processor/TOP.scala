@@ -113,7 +113,7 @@ class TOP (val formal:Boolean=false) extends Module{
 	} .elsewhen(nextmuxRegOfVecPipe===4.U){
 		RegOfVec(nextRD) := nextregPipeimm.asUInt
 	} .elsewhen(nextmuxRegOfVecPipe===5.U){
-		RegOfVec(InextRD) := nextregPipeMWB + nextregPipeimm.asUInt
+		RegOfVec(nextRD) := nextregPipeMWB + nextregPipeimm.asUInt
 	} .elsewhen(nextmuxRegOfVecPipe===6.U){
 		RegOfVec(nextRD) := nextregPipeALU
 	} .elsewhen(nextmuxRegOfVecPipe===7.U){
