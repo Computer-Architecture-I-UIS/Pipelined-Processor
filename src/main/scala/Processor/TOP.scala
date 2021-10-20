@@ -148,7 +148,7 @@ class TOP (val formal:Boolean=false) extends Module{
 		val init = RegInit(false.B)
 
 		when(init === false.B){
-			//verification.assume(reset)
+			verification.assume(Module.reset.asBool())
 			init := true.B
 		}
 	}
