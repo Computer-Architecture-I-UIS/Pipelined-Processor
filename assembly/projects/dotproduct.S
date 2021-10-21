@@ -48,6 +48,7 @@ len:  .word 7       # array length = 7
 # t3 = a[i] * b[i] (assume no overflow, lower 32 bits)
 
 main:
+	nop // Temporary Workaround
     la  s1, arr1      # s1 = a
     la  s2, arr2      # s2 = b
     lw  s3, len       # s3 = 3
@@ -55,6 +56,7 @@ main:
     add t0, x0, x0    # i = 0
     
 loop:
+	nop // Temporary Workaround
     lw   t1, 0(s1)    # t1 = a[i]
     addi s1, s1, 4    # ++a (address move forward)
     lw   t2, 0(s2)    # t2 = b[i]
@@ -62,7 +64,8 @@ loop:
     add t4, x0, 1     # t4 = 1   
     add t3, t1, x0    # t3 = t1
     
-multi:     
+multi:
+	nop // Temporary Workaround
     add t3, t3, t1    # 
     add t4, t4, 1     # t4 = t4 + 1
     blt t4, t2, multi # if t4 < t2 go to multi

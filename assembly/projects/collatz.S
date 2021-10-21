@@ -32,19 +32,23 @@
 	addi x31, zero, 0
 
   _start:
-	  li t1, 37; //Inicial
+	nop // Temporary Workaround
+	  li t1, 13; //Inicial
     li t0, 1;  //Guardar para comparcion
     .inicio:
+	nop // Temporary Workaround
 
       and t2, t1, 1;//Combrobar si el primer bit es 1
       beq t2, t0, .impar;//Saltamos a .impar si el numero es impar
 
       .par:
+	  nop // Temporary Workaround
 
         srl t1, t1, 1; //Divide en 2
         jal x1, .inicio//Saltamos a .inicio
 
         .impar:
+		nop // Temporary Workaround
 
           add t3, t1, t1;
           add t3, t3, t1;

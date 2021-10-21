@@ -115,7 +115,13 @@ This program can do dot product between two arrays whit a maximum length of 7 po
 #### <p align="center">Numerical series of addition and subtraction</p>
 This program begins whit a determined number whose we subtract 9 then to the result we add 5 and so on until obtaining the next data; this process will repeat until the next data be less than 9
 
-#### <p align="center"> :1234: Friendly numbers :1234: </p>
+##### Simulation
+
+run `./simAsm.sh Serie` from the root folder of the repository
+
+![SerieSim](res/SerieSim.png)
+
+#### <p align="center"> :1234: Amicable numbers :1234: </p>
 Defining d(n) as the sum of the proper divisors of n, if d(a) = b and d(b) = a, where a is different from b, then a and b are a pair of friendly numbers. The program finds the smallest pair of friendly numbers.
 
 ***Example***
@@ -134,6 +140,12 @@ This conjecture establishes that when applying to any number n the equation show
 ***Example***
 
 Let's look at the case for n = 13: 13, 40, 20, 10, 5, 16, 8, 4, 2, 1
+
+##### Simulation
+
+run `./simAsm.sh collatz` from the root folder of the repository
+
+![CollatzSim](res/CollatzSim.png)
 
 ### C programs
 

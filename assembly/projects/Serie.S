@@ -32,13 +32,14 @@
 	addi x31, zero, 0
 
 _start:
+	nop // Temporary Workaround
 	li t0, 9; // Minimo valor Resultado final
 	li t1, 63; //Primer digito
 	li t2, 0; //Resultado intermedio
 	li t3, 0; //Resultado final
 
 	.begin:
-
+		nop // Temporary Workaround
 		add t1, zero, 63;//Volvemos al mismo numero incial
 
 		add t2, zero ,0 ;//Volvemos al mismo numero incial
@@ -46,7 +47,7 @@ _start:
 		
 
 		.CalSerie://Bucle que permite generar la serie
-			
+		nop // Temporary Workaround
 				
 			sub t2, t1, t0;//Restando 9
 			add t3, t2, 5;//Sumando los dos digitos
