@@ -10,7 +10,7 @@ The launch of the RISC-V Instruction Set Architecture (ISA) in 2011 has allowed 
 In the figure below, we show our processor. The Datapath allows fetching the instruction in the instruction memory (it stores the whole program or the instructions to be executed), which can be an operation in the ALU or a jump, or a branch. Finally, write the result of the operation or read any data previously stored in memory and give the next instruction to execute through the program counter. On the other hand, the Controlpath has the function of controlling all Datapath activities.
 
 <p align= "center">
-<img src="https://github.com/Computer-Architecture-I-UIS/Pipelined-Processor/blob/main/Picture_Reg.png" width="100%">
+<img src="res/Picture_Reg.png" width="100%">
 </p>
 
 Inside of the Datapath, we can find out some digital blocks, for example:
@@ -109,7 +109,7 @@ then the previous script have a simple menu that indicate how execute each progr
 This program can do dot product between two arrays whit a maximum length of 7 positions and give you the result between these two vectors, in the following picture you can see the mathematical expression that was taken into account to develop the program.
 
 <p align= "center">
-<img src="https://github.com/Computer-Architecture-I-UIS/Pipelined-Processor/blob/main/dootproduct.png" width="50%">
+<img src="res/dootproduct.png" width="50%">
 </p>
 
 #### <p align="center">Numerical series of addition and subtraction</p>
@@ -128,7 +128,7 @@ To be more clear what is a friendly number we take the numbers 220 and 284
 This conjecture establishes that when applying to any number n the equation shown below will have a decomposition of itself decreasing its value until reaching the sequence 4, 2, 1.
 
 <p align= "center">
-<img src="https://github.com/Computer-Architecture-I-UIS/Pipelined-Processor/blob/main/collatz.png" width="30%">
+<img src="res/collatz.png" width="30%">
 </p>
 
 ***Example***
@@ -141,8 +141,8 @@ Let's look at the case for n = 13: 13, 40, 20, 10, 5, 16, 8, 4, 2, 1
 This program describe the possibilities that have a horse in the chessboard, the script contains a series of conditionals that ensure the right positions that the horse can take, in the following picture you can see two of many cases that can present the horse, one of them is in a position ***[5,5]*** and ***[2,2]***
 
 <p align="center">
-  <img src="https://github.com/Computer-Architecture-I-UIS/Pipelined-Processor/blob/main/5x5.png" width="40%" />
-  <img src="https://github.com/Computer-Architecture-I-UIS/Pipelined-Processor/blob/main/2x2.png" width="40%" /> 
+  <img src="res/5x5.png" width="40%" />
+  <img src="res/2x2.png" width="40%" /> 
 </p>
 
 #### <p align="center"> :chart_with_downwards_trend: Greatest common divisor :chart_with_upwards_trend: </p>
