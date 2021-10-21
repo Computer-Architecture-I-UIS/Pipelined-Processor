@@ -9,6 +9,13 @@ formal/*/
 Verilog/*
 !Verilog/TOP_tb.v
 
+dumped_files
+
+src/main/scala/Processor/datapath/IF/*
+!src/main/scala/Processor/datapath/IF/*.sh
+!src/main/scala/Processor/datapath/IF/*.template
+!src/main/scala/Processor/datapath/IF/*.py
+
 .metals/
 .bsp/
 

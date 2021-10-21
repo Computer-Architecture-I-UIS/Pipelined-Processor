@@ -56,6 +56,12 @@ The pipeline processor can execute the following instructions
 - ```lui``` - load upper immediate
 - ```auipc``` - add upper immediate to PC
 
+### Instructions test
+
+Run `./simAsm Test` to run an assembly program on the processor that tests every instruction on the list (the script opens gtkwave automatically after the simulation)
+
+![TestResults](res/TestInstructsResults.png)
+
 ## Formal Verification
 The verification of the blocks that constitute the pipelined processor was performed, following the commands shown below.
 
